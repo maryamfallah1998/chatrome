@@ -21,16 +21,16 @@ while True:
 
     try:
         while True:
+            address_header = client_socket.recv(HEADER_LENGTH)
+            address_length = int(address_header.decode('utf-8').strip())
 
+            address = client_socket.recv(address_length).decode('utf-8')
             message_header = client_socket.recv(HEADER_LENGTH)
             message_length = int(message_header.decode('utf-8').strip())
             message = client_socket.recv(message_length).decode('utf-8')
 
-            print('> > > ' + message)
+            print(address + ' > ' + message)
             
     
     except IOError as e:
         continue
-
-    
-    

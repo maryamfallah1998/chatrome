@@ -20,9 +20,11 @@ print('Server is Listening ...')
 
 
 def receive_message(client_socket):
+    message_header = client_socket.recv(HEADER_LENGTH)
 
-    data = client_socket.recv(1024)
-    return data.decode("utf-8")
+    message_length = int(message_header.decode('utf-8').strip())
+    data = client_socket.recv(message_length)
+    return {'header': message_header, 'data': data}
 
 
 while True:
@@ -40,16 +42,17 @@ while True:
 
             clients[client_socket] = user
 
-            print('Accepted new connection from '+ str(client_address))
+            print('Accepted new connection from ' + str(client_address))
 
         else:
             message = receive_message(notified_socket)
             user = clients[notified_socket]
 
-            print(f'Received message from {user}: {message}')
+            message_print = message["data"].decode('utf-8')
+            print(f'Received message from {user}: {message_print}')
 
             for client_socket in clients:
                 if client_socket != notified_socket:
-                    client_socket.send(message.encode('utf-8'))
+                    client_socket.send(message['header'] + message['data'])
 
-    
+

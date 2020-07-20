@@ -22,6 +22,9 @@ print(f'Listening for connections on {IP}:{PORT}')
 def receive_message(client_socket):
     message_header = client_socket.recv(HEADER_LENGTH)
 
+    if not len(message_header):
+        return False
+
     message_length = int(message_header.decode('utf-8').strip())
     data = client_socket.recv(message_length)
     return {'header': message_header, 'data': data}
@@ -47,6 +50,13 @@ while True:
 
         else:
             message = receive_message(notified_socket)
+
+            if message is False:
+                print('Closed connection from: {}'.format(clients[notified_socket]['data'].decode('utf-8')))
+                sockets_list.remove(notified_socket)
+                del clients[notified_socket]
+                continue
+
             user = clients[notified_socket]
 
             print(f'Received message from {user["data"].decode("utf-8")}: {message["data"].decode("utf-8")}')

@@ -17,8 +17,8 @@ username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
 
 while True:
-    message = input('YOU > ')
-
+    message = input(f'YOU:{my_username} > ')
+    
     message = message.encode('utf-8')
     message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
     client_socket.send(message_header + message)
@@ -33,7 +33,7 @@ while True:
             message_length = int(message_header.decode('utf-8').strip())
             message = client_socket.recv(message_length).decode('utf-8')
 
-            print(username + ' > ' + message)
+            print(f'{username} > {message}')
             
     
     except IOError as e:

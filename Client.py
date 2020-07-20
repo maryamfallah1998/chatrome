@@ -18,14 +18,20 @@ client_socket.send(username_header + username)
 
 while True:
     message = input(f'YOU:{my_username} > ')
-    
-    message = message.encode('utf-8')
-    message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
-    client_socket.send(message_header + message)
+
+    if message:
+        message = message.encode('utf-8')
+        message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+        client_socket.send(message_header + message)
 
     try:
         while True:
             username_header = client_socket.recv(HEADER_LENGTH)
+
+            if not len(username_header):
+                print('Connection closed by the server')
+                sys.exit()
+
             username_length = int(username_header.decode('utf-8').strip())
             username = client_socket.recv(username_length).decode('utf-8')
 

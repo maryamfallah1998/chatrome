@@ -16,7 +16,7 @@ sockets_list = [server_socket]
 
 clients = {}
 
-print('Server is Listening ...')
+print(f'Listening for connections on {IP}:{PORT}')
 
 
 def receive_message(client_socket):
@@ -42,7 +42,8 @@ while True:
 
             clients[client_socket] = user
 
-            print('Accepted new user: ' + user['data'].decode('utf-8'))
+            print('Accepted new connection from {}:{}, username: {}'.format(*client_address,
+                                                                            user['data'].decode('utf-8')))
 
         else:
             message = receive_message(notified_socket)

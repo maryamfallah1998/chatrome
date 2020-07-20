@@ -11,6 +11,10 @@ client_socket.connect((IP, PORT))
 
 client_socket.setblocking(False)
 
+my_username = input("Username: ")
+username = my_username.encode('utf-8')
+username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
+client_socket.send(username_header + username)
 
 while True:
     message = input('YOU > ')
@@ -21,16 +25,19 @@ while True:
 
     try:
         while True:
-            address_header = client_socket.recv(HEADER_LENGTH)
-            address_length = int(address_header.decode('utf-8').strip())
+            username_header = client_socket.recv(HEADER_LENGTH)
+            username_length = int(username_header.decode('utf-8').strip())
+            username = client_socket.recv(username_length).decode('utf-8')
 
-            address = client_socket.recv(address_length).decode('utf-8')
             message_header = client_socket.recv(HEADER_LENGTH)
             message_length = int(message_header.decode('utf-8').strip())
             message = client_socket.recv(message_length).decode('utf-8')
 
-            print(address + ' > ' + message)
+            print(username + ' > ' + message)
             
     
     except IOError as e:
         continue
+
+    
+    
